@@ -10,16 +10,16 @@ const columns = input.split("\n").map((line) =>
     .map(Number)
 );
 
-const firstColumn = columns.map((column) => column[0]);
-const secondColumn = columns.map((column) => column[1]);
+const firstColumn = columns.map((column) => column[0]).sort();
+const secondColumn = columns.map((column) => column[1]).sort();
 
 let sum = 0;
 
-while (firstColumn.length > 0) {
-  const firstMin = Math.min(...firstColumn);
-  const secondMin = Math.min(...secondColumn);
-  const distance = Math.abs(firstMin - secondMin);
+for (let i = 0; i < firstColumn.length; i++) {
+  const first = firstColumn[i];
+  const second = secondColumn[i];
+  const distance = Math.abs(first - second);
   sum += distance;
-  firstColumn.splice(firstColumn.indexOf(firstMin), 1);
-  secondColumn.splice(secondColumn.indexOf(secondMin), 1);
 }
+
+console.log(sum);
