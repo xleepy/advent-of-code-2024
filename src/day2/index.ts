@@ -14,7 +14,6 @@ type State = "decrease" | "increase";
 const isRowSafe = (row: number[]): boolean => {
   let state: State = "increase";
   let prevState: State | undefined;
-
   for (let i = 1; i < row.length; i++) {
     const prevValue = row[i - 1];
     const currValue = row[i];
@@ -40,6 +39,19 @@ const isRowSafe = (row: number[]): boolean => {
   return true;
 };
 
-const safeLevels = rows.map(isRowSafe).filter(Boolean).length;
+const safeLevels = rows
+  .map((row) => {
+    if (isRowSafe(row)) {
+      return true;
+    }
+    for (let i = 0; i < row.length; i++) {
+      const newRow = row.toSpliced(i, 1);
+      if (isRowSafe(newRow)) {
+        return true;
+      }
+    }
+    return false;
+  })
+  .filter(Boolean).length;
 
 console.log(safeLevels);
