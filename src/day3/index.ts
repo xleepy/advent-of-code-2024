@@ -27,16 +27,27 @@ const example =
 const example2 =
   "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))";
 
-const extractMulInstructions = (input: string) => {
-  const regex = /mul\((\d+),(\d+)\)/g;
-  return input.match(regex) ?? [];
+const multiplyInput = (input: string) => {
+  const regex = /mul\((\d+),(\d+)\)|do\(\)|don't/g;
+  const instructions = input.match(regex) ?? [];
+  let shouldSkip = false;
+  return instructions.reduce<number[]>((acc, curr) => {
+    if (curr === "don't") {
+      shouldSkip = true;
+      return acc;
+    }
+    if (curr === "do()") {
+      shouldSkip = false;
+      return acc;
+    }
+    if (shouldSkip) {
+      return acc;
+    }
+    const [x, y] = curr.match(/\d+/g) ?? [];
+    return [...acc, Number(x) * Number(y)];
+  }, []);
 };
 
-const instructions = extractMulInstructions(example2);
-const multiplyResults = instructions.map((instruction) => {
-  const [x, y] = instruction.match(/\d+/g) ?? [];
-  return Number(x) * Number(y);
-});
-
-const sum = multiplyResults.reduce((acc, curr) => acc + curr, 0);
+const instructions = multiplyInput(input);
+const sum = instructions.reduce((acc, curr) => acc + curr, 0);
 console.log(sum);
